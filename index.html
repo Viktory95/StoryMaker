@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Story Maker</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/mainstyle.css">
+</head>
+<body>
+<form>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <form class="form-inline">
+            <button id="new-story" class="btn btn-sm btn-outline-secondary" type="button">New story</button>
+            <button id="all-stories" class="btn btn-sm btn-outline-secondary" type="button">All stories</button>
+            <button id="new-episode" class="btn btn-sm btn-outline-secondary" type="button">New episode</button>
+            <button id="all-episodes" class="btn btn-sm btn-outline-secondary" type="button">All episodes</button>
+            <button id="new-scene" class="btn btn-sm btn-outline-secondary" type="button">New scene</button>
+            <button id="all-scenes" class="btn btn-sm btn-outline-secondary" type="button">All scene</button>
+        </form>
+    </nav>
+
+    <div class="row" id="story-creation">
+        <div class="form-group">
+            <div class="form-check">
+                <input id="story-name" type="text" class="form-con00trol" placeholder="Story name">
+            </div>
+            <button id="create-story" class="btn btn-dark" type="button">Create</button>
+        </div>
+    </div>
+
+    <div class="row" id="episode-creation" hidden="true">
+
+        <div class="form-group">
+            <div class="form-check">
+                <input id="episode-name" type="text" class="form-con00trol" placeholder="Episode name">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="choose-story">Story</label>
+            <select class="form-control" id="choose-story">
+                <option>EMPTY</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="prev-episode">Prev episode</label>
+            <select class="form-control" id="prev-episode">
+                <option>EMPTY</option>
+            </select>
+        </div>
+
+        <button id="create-episode" class="btn btn-dark" type="button">Create</button>
+    </div>
+
+    <div class="row" id="scene-creation" hidden="true">
+        <div class="col">
+
+            <div class="form-group">
+                <label for="choose-episode">Episode</label>
+                <select class="form-control" id="choose-episode">
+                    <option>EMPTY</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="image-choose">Image</label>
+                <input type="file" class="form-control-file" id="image-choose">
+            </div>
+
+            <div class="form-group">
+                <label for="scene-text">Text</label>
+                <textarea class="form-control" id="scene-text" rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="text-style">Text style</label>
+                <select class="form-control" id="text-style">
+                    <option>Top</option>
+                    <option>Left</option>
+                    <option>Right</option>
+                    <option>Bottom</option>
+                    <option>Middle</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="image-animation">Animation</label>
+                <select class="form-control" id="image-animation">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="choices">
+                <p>Choices</p>
+                <button id="add-choice" type="button" class="btn btn-dark">Add</button>
+            </div>
+
+            <div class="form-group">
+                <label for="scene-text">Prize</label>
+                <textarea class="form-control" id="prize-text" rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="prev-scene">Prev scene</label>
+                <select class="form-control" id="prev-scene">
+                    <option>EMPTY</option>
+                </select>
+            </div>
+        </div>
+        <div class="col">
+            <div id="preview">Preview</div>
+            <button id="create-scene" class="btn btn-dark" type="button">Create</button>
+        </div>
+    </div>
+</form>
+<script>
+    require('./renderer')
+</script>
+</body>
+</html>
