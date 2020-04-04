@@ -25,7 +25,6 @@ const $createStory = $('#create-story')
 
 const $episodeName = $('#episode-name')
 const $chooseStory = $('#choose-story')
-const $prevEpisode = $('#prev-episode')
 const $createEpisode = $('#create-episode')
 
 const $chooseEpisode = $('#choose-episode')
