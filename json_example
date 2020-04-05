@@ -12,7 +12,7 @@
             "name": "scene 1",
             "image": "image_path",
             "text": "text",
-            "text-position": "middle",
+            "textPosition": "middle",
             "animation": "",
             "prize": "prize text",
             "choices": [
