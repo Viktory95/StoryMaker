@@ -16,6 +16,10 @@ const $allEpisodes = $('#all-episodes')
 const $newScene = $('#new-scene')
 const $allScenes = $('#all-scenes')
 
+const $viewAllStories = $('#view-all-stories')
+const $viewAllEpisodes = $('#view-all-episodes')
+const $viewAllScenes = $('#view-all-scenes')
+
 const $storyCreation = $('#story-creation')
 const $episodeCreation = $('#episode-creation')
 const $sceneCreation = $('#scene-creation')
@@ -40,13 +44,158 @@ const $firstScene = $('#first-scene')
 const $preview = $('#preview')
 const $createScene = $('#create-scene')
 
-var imageChoose = '';
-var choiceCount = 0;
+var imageChoose = ''
+var imagePath = ''
+var choiceCount = 0
 
 $newStory.addEventListener('click', () => {
     $storyCreation.hidden = false
     $episodeCreation.hidden = true
     $sceneCreation.hidden = true
+    $viewAllStories.hidden = true
+    $viewAllEpisodes.hidden = true
+    $viewAllScenes.hidden = true
+})
+
+$allStories.addEventListener('click', () => {
+    $storyCreation.hidden = true
+    $episodeCreation.hidden = true
+    $sceneCreation.hidden = true
+    $viewAllStories.hidden = false
+    $viewAllEpisodes.hidden = true
+    $viewAllScenes.hidden = true
+
+    let table = document.createElement('table')
+    table.className = 'table'
+
+    let thead = document.createElement('thead')
+
+    let tr = document.createElement('tr')
+
+    let thName = document.createElement('th')
+    thName.scope = 'col'
+    thName.innerText = 'Name'
+
+    let thActions = document.createElement('th')
+    thActions.scope = 'col'
+    thActions.innerText = 'Actions'
+
+    tr.appendChild(thName)
+    tr.appendChild(thActions)
+    thead.appendChild(tr)
+    table.appendChild(thead)
+
+    let tbody = document.createElement('tbody')
+
+    let stories = getDirectories(path.resolve(dir))
+    for(let storyNum = 0; storyNum < stories.length; storyNum++) {
+        let tr = document.createElement('tr')
+
+        let tdName = document.createElement('td')
+        tdName.id = 'story-' + storyNum
+        tdName.innerText = stories[storyNum]
+
+        let tdActions = document.createElement('td')
+        tdActions.id = 'story-actions-' + storyNum
+
+        let buttonEdit = document.createElement('button')
+        buttonEdit.className = 'btn btn-dark'
+        buttonEdit.type = 'button'
+        buttonEdit.innerText = 'Edit'
+        buttonEdit.id = 'story-edit-' + storyNum
+
+        let buttonDelete = document.createElement('button')
+        buttonDelete.className = 'btn btn-dark'
+        buttonDelete.type = 'button'
+        buttonDelete.innerText = 'Delete'
+        buttonDelete.id = 'story-delete-' + storyNum
+
+        tdActions.appendChild(buttonEdit)
+        tdActions.appendChild(buttonDelete)
+        tr.appendChild(tdName)
+        tr.appendChild(tdActions)
+        tbody.appendChild(tr)
+    }
+
+    table.appendChild(tbody)
+
+    $viewAllStories.append(table)
+})
+
+$allEpisodes.addEventListener('click', () => {
+    $storyCreation.hidden = true
+    $episodeCreation.hidden = true
+    $sceneCreation.hidden = true
+    $viewAllStories.hidden = true
+    $viewAllEpisodes.hidden = false
+    $viewAllScenes.hidden = true
+
+    let table = document.createElement('table')
+    table.className = 'table'
+
+    let thead = document.createElement('thead')
+
+    let tr = document.createElement('tr')
+
+    let thName = document.createElement('th')
+    thName.scope = 'col'
+    thName.innerText = 'Name'
+
+    let thActions = document.createElement('th')
+    thActions.scope = 'col'
+    thActions.innerText = 'Actions'
+
+    tr.appendChild(thName)
+    tr.appendChild(thActions)
+    thead.appendChild(tr)
+    table.appendChild(thead)
+
+    let tbody = document.createElement('tbody')
+
+    let stories = getDirectories(path.resolve(dir))
+    for(let storyNum = 0; storyNum < stories.length; storyNum++) {
+        let storyName = stories[storyNum]
+        let fileData = require('./' + dir + storyName + '/' + storyName + '.json')
+        if(fileData.story.episodes) {
+            for (let elNum = 0; elNum < fileData.story.episodes.length; elNum++) {
+
+                let episodeId = fileData.story.episodes[elNum].id
+                let episodeName = fileData.story.episodes[elNum].name
+                let tr = document.createElement('tr')
+
+                let tdName = document.createElement('td')
+                tdName.id = 'episode-' + episodeId
+                tdName.innerText = episodeName
+
+                let tdActions = document.createElement('td')
+                tdActions.id = 'episode-actions-' + episodeId
+
+                let buttonEdit = document.createElement('button')
+                buttonEdit.className = 'btn btn-dark'
+                buttonEdit.type = 'button'
+                buttonEdit.innerText = 'Edit'
+                buttonEdit.id = 'episode-edit-' + episodeId
+                buttonEdit.story = storyName
+
+                let buttonDelete = document.createElement('button')
+                buttonDelete.className = 'btn btn-dark'
+                buttonDelete.type = 'button'
+                buttonDelete.innerText = 'Delete'
+                buttonDelete.id = 'episode-delete-' + episodeId
+                buttonDelete.story = storyName
+
+                tdActions.appendChild(buttonEdit)
+                tdActions.appendChild(buttonDelete)
+                tr.appendChild(tdName)
+                tr.appendChild(tdActions)
+                tbody.appendChild(tr)
+            }
+        }
+    }
+
+    table.appendChild(tbody)
+
+    $viewAllEpisodes.append(table)
 })
 
 $newEpisode.addEventListener('click', () => {
@@ -54,6 +203,9 @@ $newEpisode.addEventListener('click', () => {
     $storyCreation.hidden = true
     $episodeCreation.hidden = false
     $sceneCreation.hidden = true
+    $viewAllStories.hidden = true
+    $viewAllEpisodes.hidden = true
+    $viewAllScenes.hidden = true
     let stories = getDirectories(path.resolve(dir))
     for(let storyNum = 0; storyNum < stories.length; storyNum++) {
         let option = document.createElement("option")
@@ -67,6 +219,9 @@ $newScene.addEventListener('click', () => {
     $storyCreation.hidden = true
     $episodeCreation.hidden = true
     $sceneCreation.hidden = false
+    $viewAllStories.hidden = true
+    $viewAllEpisodes.hidden = true
+    $viewAllScenes.hidden = true
 
     if($('#choose-story-for-scene option') != null) $('#choose-story-for-scene option').remove() //TODO: fix
     let stories = getDirectories(path.resolve(dir))
@@ -200,12 +355,13 @@ $chooseStoryForScene.addEventListener('change', () => {
 
 $('input[type="file"]').addEventListener('change', (e) => {
     imageChoose = e.target.files[0].name
+    imagePath = e.target.files[0].path
 })
 
 //Create Scene event
 $createScene.addEventListener('click', () => {
     let storyName = $chooseStoryForScene.options[$chooseStoryForScene.selectedIndex].value
-    let episodeName = $chooseEpisode.options[$chooseStoryForScene.selectedIndex].value
+    let episodeName = $chooseEpisode.options[$chooseEpisode.selectedIndex].value
 
     let sceneText = $sceneText.value
     let textStyle = $textStyle.value
@@ -213,8 +369,6 @@ $createScene.addEventListener('click', () => {
     let prizeText = $prizeText.value
     let firstScene = $firstScene.checked
     let choices = document.querySelectorAll('[id^="choose-inf-"]')
-
-    console.log(choices)
 
     if (fs.existsSync(path.resolve(dir + storyName + '/' + storyName + '.json'))){
         let fileData = require('./' + dir + storyName + '/' + storyName + '.json')
@@ -252,7 +406,7 @@ $createScene.addEventListener('click', () => {
                             sceneJson.choices = [{id: 0, text: 'default'}]
                         }
 
-                        fileData.story.episodes[elNum].scenes[fileData.story.episodes.length] = sceneJson
+                        fileData.story.episodes[elNum].scenes[fileData.story.episodes[elNum].scenes.length] = sceneJson
                     } else {
                         let sceneJson = [{id: 1,
                             isStart: firstScene,
@@ -284,9 +438,16 @@ $createScene.addEventListener('click', () => {
             }
         }
 
+        fs.copyFile(imagePath, path.resolve(dir + storyName + '/' + imageChoose), (err) => {
+            if (err) throw err;
+            console.log(imageChoose + ' was copied.');
+        });
+
         fs.writeFileSync(path.resolve(dir + storyName + '/' + storyName + '.json'), JSON.stringify(fileData), 'utf8', function () {
             console.log('Data in db were saved.')
         })
+        imagePath = ''
+        imageChoose = ''
         //TODO: user inform message
     }
 })
