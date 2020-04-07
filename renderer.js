@@ -6,6 +6,7 @@ const fs = require('fs')
 const path = require('path')
 const $ = selector => document.querySelector(selector)
 const marked = require('marked')
+const Path = require('path');
 
 const dir = './temp_story_files/'
 
@@ -58,6 +59,7 @@ $newStory.addEventListener('click', () => {
 })
 
 $allStories.addEventListener('click', () => {
+    if($('#story-table')) $('#story-table').remove()
     $storyCreation.hidden = true
     $episodeCreation.hidden = true
     $sceneCreation.hidden = true
@@ -67,6 +69,7 @@ $allStories.addEventListener('click', () => {
 
     let table = document.createElement('table')
     table.className = 'table'
+    table.id = 'story-table'
 
     let thead = document.createElement('thead')
 
@@ -89,11 +92,18 @@ $allStories.addEventListener('click', () => {
 
     let stories = getDirectories(path.resolve(dir))
     for(let storyNum = 0; storyNum < stories.length; storyNum++) {
+        let storyName = stories[storyNum]
         let tr = document.createElement('tr')
+        tr.id = 'story-tr-' + storyNum
 
         let tdName = document.createElement('td')
         tdName.id = 'story-' + storyNum
-        tdName.innerText = stories[storyNum]
+
+        let inputName = document.createElement('input')
+        inputName.id = 'input-story-' + storyNum
+        inputName.value = storyName
+        inputName.type = 'text'
+        inputName.className = 'form-con00trol'
 
         let tdActions = document.createElement('td')
         tdActions.id = 'story-actions-' + storyNum
@@ -103,13 +113,51 @@ $allStories.addEventListener('click', () => {
         buttonEdit.type = 'button'
         buttonEdit.innerText = 'Edit'
         buttonEdit.id = 'story-edit-' + storyNum
+        buttonEdit.storyName = storyName
+        buttonEdit.storyId = storyNum
 
         let buttonDelete = document.createElement('button')
         buttonDelete.className = 'btn btn-dark'
         buttonDelete.type = 'button'
         buttonDelete.innerText = 'Delete'
         buttonDelete.id = 'story-delete-' + storyNum
+        buttonDelete.storyName = storyName
+        buttonDelete.storyId = storyNum
 
+        buttonEdit.addEventListener('click', (e) => {
+            let storyName = e.target.storyName
+            let storyId = e.target.storyId
+            let newStoryName = $('#input-story-' + storyId).value
+            let fileData = require('./' + dir + storyName + '/' + storyName + '.json')
+            fileData.story.name = newStoryName
+            fs.writeFileSync(path.resolve(dir + storyName + '/' + storyName + '.json'), JSON.stringify(fileData), 'utf8', function () {
+                console.log('Data in db were saved.')
+            })
+            fs.renameSync(path.resolve(dir + storyName + '/' + storyName + '.json'), path.resolve(dir + storyName + '/' + newStoryName + '.json'))
+            fs.renameSync(path.resolve(dir + storyName), path.resolve(dir + newStoryName))
+            e.target.storyName = newStoryName
+        })
+
+        buttonDelete.addEventListener('click', (e) => {
+            let storyName = e.target.storyName
+            const deleteFolderRecursive = function (path) {
+                if (fs.existsSync(path)) {
+                    fs.readdirSync(path).forEach((file, index) => {
+                        const curPath = Path.join(path, file)
+                    if (fs.lstatSync(curPath).isDirectory()) {
+                        deleteFolderRecursive(curPath)
+                    } else {
+                        fs.unlinkSync(curPath)
+                    }
+                })
+                    fs.rmdirSync(path)
+                }
+            }
+            deleteFolderRecursive(path.resolve(dir + storyName))
+            $('#story-tr-' + e.target.storyId).remove()
+        })
+
+        tdName.appendChild(inputName)
         tdActions.appendChild(buttonEdit)
         tdActions.appendChild(buttonDelete)
         tr.appendChild(tdName)
@@ -123,6 +171,7 @@ $allStories.addEventListener('click', () => {
 })
 
 $allEpisodes.addEventListener('click', () => {
+    if($('#episode-table')) $('#episode-table').remove()
     $storyCreation.hidden = true
     $episodeCreation.hidden = true
     $sceneCreation.hidden = true
@@ -132,6 +181,7 @@ $allEpisodes.addEventListener('click', () => {
 
     let table = document.createElement('table')
     table.className = 'table'
+    table.id = 'episode-table'
 
     let thead = document.createElement('thead')
 
@@ -364,8 +414,8 @@ $createScene.addEventListener('click', () => {
     let episodeName = $chooseEpisode.options[$chooseEpisode.selectedIndex].value
 
     let sceneText = $sceneText.value
-    let textStyle = $textStyle.value
-    let imageAnimation = $imageAnimation.value
+    let textStyle = $textStyle.options[$textStyle.selectedIndex].value
+    let imageAnimation = $imageAnimation.options[$imageAnimation.selectedIndex].value
     let prizeText = $prizeText.value
     let firstScene = $firstScene.checked
     let choices = document.querySelectorAll('[id^="choose-inf-"]')
