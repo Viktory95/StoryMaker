@@ -58,6 +58,230 @@ $newStory.addEventListener('click', () => {
     $viewAllScenes.hidden = true
 })
 
+$allScenes.addEventListener('click', () => {
+    if($('#scene-table')) $('#scene-table').remove()
+    $storyCreation.hidden = true
+    $episodeCreation.hidden = true
+    $sceneCreation.hidden = true
+    $viewAllStories.hidden = true
+    $viewAllEpisodes.hidden = true
+    $viewAllScenes.hidden = false
+
+let table = document.createElement('table')
+table.className = 'table'
+table.id = 'scene-table'
+
+let thead = document.createElement('thead')
+
+let tr = document.createElement('tr')
+
+let thName = document.createElement('th')
+thName.scope = 'col'
+thName.innerText = 'Name'
+
+let thNextScene = document.createElement('th')
+thNextScene.scope = 'col'
+thNextScene.innerText = 'Actions'
+
+let thActions = document.createElement('th')
+thActions.scope = 'col'
+thActions.innerText = 'Actions'
+
+tr.appendChild(thName)
+tr.appendChild(thNextScene)
+tr.appendChild(thActions)
+thead.appendChild(tr)
+table.appendChild(thead)
+
+let tbody = document.createElement('tbody')
+
+let stories = getDirectories(path.resolve(dir))
+for(let storyNum = 0; storyNum < stories.length; storyNum++) {
+    let storyName = stories[storyNum]
+    let fileData = require('./' + dir + storyName + '/' + storyName + '.json')
+    if(fileData.story.episodes) {
+        for (let elNum = 0; elNum < fileData.story.episodes.length; elNum++) {
+            let episodeId = fileData.story.episodes[elNum].id
+            let episodeName = fileData.story.episodes[elNum].name
+            if(fileData.story.episodes[elNum].scenes) {
+                for (let sceneNum = 0; sceneNum < fileData.story.episodes[elNum].scenes.length; sceneNum++) {
+                    let sceneId = fileData.story.episodes[elNum].scenes[sceneNum].id
+                    let sceneName = fileData.story.episodes[elNum].scenes[sceneNum].name
+                    if(fileData.story.episodes[elNum].scenes[sceneNum].choices) {
+                        for (let choiceNum = 0; choiceNum < fileData.story.episodes[elNum].scenes[sceneNum].choices.length; choiceNum++) {
+                            let choiceId = fileData.story.episodes[elNum].scenes[sceneNum].choices[choiceNum].id
+                            let choiceText = fileData.story.episodes[elNum].scenes[sceneNum].choices[choiceNum].text
+
+                            let tr = document.createElement('tr')
+                            tr.id = 'scene-tr-' + choiceId + '-' + sceneId + '-' + episodeId + '-' + storyNum
+
+                            let tdName = document.createElement('td')
+                            tdName.id = 'scene-' + choiceId + '-' + sceneId + '-' + episodeId + '-' + storyNum
+                            tdName.innerText = 'Story: ' + storyName + '; Episode: ' + episodeName + '; Scene: ' + sceneName + '     '
+
+                            let inputName = document.createElement('input')
+                            inputName.id = 'input-scene-' + choiceId + '-' + sceneId + '-' + episodeId + '-' + storyNum
+                            inputName.value = choiceText
+                            inputName.type = 'text'
+                            inputName.className = 'form-con00trol'
+
+                            let tdNextScene = document.createElement('td')
+                            tdName.id = 'td-next-scene-' + choiceId + '-' + sceneId + '-' + episodeId + '-' + storyNum
+
+                            let selectNextScene = document.createElement('select')
+                            selectNextScene.className = 'form-control'
+                            selectNextScene.id = 'next-scene-' + choiceId + '-' + sceneId + '-' + episodeId + '-' + storyNum
+
+                            let option = document.createElement('option')
+                            option.innerText = 'End'
+                            option.sceneId = ''
+                            selectNextScene.appendChild(option)
+
+                            for (let sceneNum2 = 0; sceneNum2 < fileData.story.episodes[elNum].scenes.length; sceneNum2++) {
+                                if(fileData.story.episodes[elNum].scenes[sceneNum2].id != sceneId) {
+                                    let option = document.createElement('option')
+                                    option.innerText = fileData.story.episodes[elNum].scenes[sceneNum2].name
+                                    option.sceneId = sceneId
+                                    selectNextScene.appendChild(option)
+                                }
+                            }
+
+                            tdNextScene.appendChild(selectNextScene)
+
+                            let tdActions = document.createElement('td')
+                            tdActions.id = 'scene-actions-' + choiceId + '-' + sceneId + '-' + episodeId + '-' + storyNum
+
+                            let buttonEdit = document.createElement('button')
+                            buttonEdit.className = 'btn btn-dark'
+                            buttonEdit.type = 'button'
+                            buttonEdit.innerText = 'Edit'
+                            buttonEdit.id = 'scene-edit-' + choiceId + '-' + sceneId + '-' + episodeId + '-' + storyNum
+                            buttonEdit.story = storyName
+                            buttonEdit.episodeId = episodeId
+                            buttonEdit.storyNum = storyNum
+                            buttonEdit.sceneId = sceneId
+                            buttonEdit.choiceId = choiceId
+
+                            let buttonDelete = document.createElement('button')
+                            buttonDelete.className = 'btn btn-dark'
+                            buttonDelete.type = 'button'
+                            buttonDelete.innerText = 'Delete'
+                            buttonDelete.id = 'scene-delete-' + choiceId + '-' + sceneId + '-' + episodeId + '-' + storyNum
+                            buttonDelete.story = storyName
+                            buttonDelete.episodeId = episodeId
+                            buttonDelete.storyNum = storyNum
+                            buttonDelete.sceneId = sceneId
+                            buttonDelete.choiceId = choiceId
+
+                            buttonEdit.addEventListener('click', (e) => {
+                                let storyName1 = e.target.story
+                                let episodeId1 = e.target.episodeId
+                                let sceneId1 = e.target.sceneId
+                                let choiceId1 = e.target.choiceId
+                                let fileData = require('./' + dir + storyName1 + '/' + storyName1 + '.json')
+                                for (let episodeNum1 = 0; episodeNum1 < fileData.story.episodes.length; episodeNum1++) {
+                                    if(fileData.story.episodes[episodeNum1].id == episodeId1
+                                        && fileData.story.episodes[episodeNum1].scenes) {
+                                        for (let sceneNum1 = 0; sceneNum1 < fileData.story.episodes[episodeNum1].scenes.length; sceneNum1++) {
+                                            if(fileData.story.episodes[episodeNum1].scenes[sceneNum1].id == sceneId1
+                                                && fileData.story.episodes[episodeNum1].scenes[sceneNum1].choices) {
+                                                for (let choiceNum1 = 0; choiceNum1 < fileData.story.episodes[episodeNum1].scenes[sceneNum1].choices.length; choiceNum1++) {
+                                                    if (fileData.story.episodes[episodeNum1].scenes[sceneNum1].choices[choiceNum1].id == choiceId1) {
+                                                        fileData.story.episodes[episodeNum1].scenes[sceneNum1].choices[choiceNum1].text = $('#input-scene-' + choiceId1 + '-'
+                                                            + sceneId1 + '-' + episodeId1 + '-' + e.target.storyNum).value
+
+                                                        let $chooseNextScene = $('#next-scene-' +  + choiceId1 + '-'
+                                                            + sceneId1 + '-' + episodeId1 + '-' + e.target.storyNum)
+
+                                                        fileData.story.episodes[episodeNum1].scenes[sceneNum1].choices[choiceNum1].nextScene =
+                                                            $chooseNextScene.options[$chooseNextScene.selectedIndex].sceneId
+
+                                                        console.log($chooseNextScene.options[$chooseNextScene.selectedIndex].sceneId)
+
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                fs.writeFileSync(path.resolve(dir + storyName1 + '/' + storyName1 + '.json'), JSON.stringify(fileData), 'utf8', function () {
+                                    console.log('Data in db were saved.')
+                                })
+                            })
+
+                            buttonDelete.addEventListener('click', (e) => {
+                                let storyName1 = e.target.story
+                                let episodeId1 = e.target.episodeId
+                                let sceneId1 = e.target.sceneId
+                                let choiceId1 = e.target.choiceId
+                                let sceneToDelete = false
+                                let fileData = require('./' + dir + storyName1 + '/' + storyName1 + '.json')
+                                for (let episodeNum1 = 0; episodeNum1 < fileData.story.episodes.length; episodeNum1++) {
+                                    if(fileData.story.episodes[episodeNum1].id == episodeId1
+                                        && fileData.story.episodes[episodeNum1].scenes) {
+                                        for (let sceneNum1 = 0; sceneNum1 < fileData.story.episodes[episodeNum1].scenes.length; sceneNum1++) {
+                                            if(fileData.story.episodes[episodeNum1].scenes[sceneNum1].id == sceneId1
+                                                && fileData.story.episodes[episodeNum1].scenes[sceneNum1].choices) {
+
+                                                if(fileData.story.episodes[episodeNum1].scenes[sceneNum1].choices.length == 1) {
+                                                    sceneToDelete = true
+                                                } else {
+                                                    let choices = fileData.story.episodes[episodeNum1].scenes[sceneNum1].choices
+                                                    fileData.story.episodes[episodeNum1].scenes[sceneNum1].choices = []
+                                                    for (let choiceNum1 = 0; choiceNum1 < choices.length; choiceNum1++) {
+                                                        if (choices[choiceNum1].id != choiceId1) {
+                                                            fileData.story.episodes[episodeNum1].scenes[sceneNum1].choices.push(choices[choiceNum1])
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if(sceneToDelete) {
+                                    for (let episodeNum1 = 0; episodeNum1 < fileData.story.episodes.length; episodeNum1++) {
+                                        if(fileData.story.episodes[episodeNum1].id == episodeId1
+                                            && fileData.story.episodes[episodeNum1].scenes) {
+                                            let scenes = fileData.story.episodes[episodeNum1].scenes
+                                            fileData.story.episodes[episodeNum1].scenes = []
+                                            for (let sceneNum1 = 0; sceneNum1 < scenes.length; sceneNum1++) {
+                                                if(scenes[sceneNum1].id != sceneId1) {
+                                                    fileData.story.episodes[episodeNum1].scenes.push(scenes[sceneNum1])
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                fs.writeFileSync(path.resolve(dir + storyName1 + '/' + storyName1 + '.json'), JSON.stringify(fileData), 'utf8', function () {
+                                    console.log('Data in db were saved.')
+                                })
+                                $('#scene-tr-' + choiceId1 + '-' + sceneId1 + '-' + episodeId1 + '-' + e.target.storyNum).remove()
+                            })
+
+                            tdActions.appendChild(buttonEdit)
+                            tdActions.appendChild(buttonDelete)
+                            tdName.appendChild(inputName)
+                            tr.appendChild(tdName)
+                            tr.appendChild(tdNextScene)
+                            tr.appendChild(tdActions)
+                            tbody.appendChild(tr)
+
+                        }
+                    }
+                }
+            }
+            }
+        }
+    }
+
+    table.appendChild(tbody)
+
+    $viewAllScenes.append(table)
+
+})
+
 $allStories.addEventListener('click', () => {
     if($('#story-table')) $('#story-table').remove()
     $storyCreation.hidden = true
@@ -212,30 +436,71 @@ $allEpisodes.addEventListener('click', () => {
                 let episodeId = fileData.story.episodes[elNum].id
                 let episodeName = fileData.story.episodes[elNum].name
                 let tr = document.createElement('tr')
+                tr.id = 'episode-tr-' + episodeId + '-' + storyNum
 
                 let tdName = document.createElement('td')
-                tdName.id = 'episode-' + episodeId
-                tdName.innerText = episodeName
+                tdName.id = 'episode-' + episodeId + '-' + storyNum
+                tdName.innerText = storyName + ': '
+
+                let inputName = document.createElement('input')
+                inputName.id = 'input-episode-' + episodeId + '-' + storyNum
+                inputName.value = episodeName
+                inputName.type = 'text'
+                inputName.className = 'form-con00trol'
 
                 let tdActions = document.createElement('td')
-                tdActions.id = 'episode-actions-' + episodeId
+                tdActions.id = 'episode-actions-' + episodeId + '-' + storyNum
 
                 let buttonEdit = document.createElement('button')
                 buttonEdit.className = 'btn btn-dark'
                 buttonEdit.type = 'button'
                 buttonEdit.innerText = 'Edit'
-                buttonEdit.id = 'episode-edit-' + episodeId
+                buttonEdit.id = 'episode-edit-' + episodeId + '-' + storyNum
                 buttonEdit.story = storyName
+                buttonEdit.episodeId = episodeId
+                buttonEdit.storyNum = storyNum
 
                 let buttonDelete = document.createElement('button')
                 buttonDelete.className = 'btn btn-dark'
                 buttonDelete.type = 'button'
                 buttonDelete.innerText = 'Delete'
-                buttonDelete.id = 'episode-delete-' + episodeId
+                buttonDelete.id = 'episode-delete-' + episodeId + '-' + storyNum
                 buttonDelete.story = storyName
+                buttonDelete.episodeId = episodeId
+                buttonDelete.storyNum = storyNum
+
+                buttonEdit.addEventListener('click', (e) => {
+                    let storyName = e.target.story
+                    let fileData = require('./' + dir + storyName + '/' + storyName + '.json')
+                    for (let episodeNum = 0; episodeNum < fileData.story.episodes.length; episodeNum++) {
+                        if (fileData.story.episodes[episodeNum].id == e.target.episodeId) {
+                            fileData.story.episodes[episodeNum].name = $('#input-episode-' + e.target.episodeId + '-' + e.target.storyNum).value
+                        }
+                    }
+                    fs.writeFileSync(path.resolve(dir + storyName + '/' + storyName + '.json'), JSON.stringify(fileData), 'utf8', function () {
+                        console.log('Data in db were saved.')
+                    })
+                })
+
+                buttonDelete.addEventListener('click', (e) => {
+                    let storyName = e.target.story
+                    let fileData = require('./' + dir + storyName + '/' + storyName + '.json')
+                    let episodes = fileData.story.episodes
+                    fileData.story.episodes = []
+                    for (let episodeNum = 0; episodeNum < episodes.length; episodeNum++) {
+                        if (episodes[episodeNum].id != e.target.episodeId) {
+                            fileData.story.episodes.push(episodes[episodeNum])
+                        }
+                    }
+                    fs.writeFileSync(path.resolve(dir + storyName + '/' + storyName + '.json'), JSON.stringify(fileData), 'utf8', function () {
+                        console.log('Data in db were saved.')
+                    })
+                    $('#episode-tr-' + e.target.episodeId + '-' + e.target.storyNum).remove()
+                })
 
                 tdActions.appendChild(buttonEdit)
                 tdActions.appendChild(buttonDelete)
+                tdName.appendChild(inputName)
                 tr.appendChild(tdName)
                 tr.appendChild(tdActions)
                 tbody.appendChild(tr)
