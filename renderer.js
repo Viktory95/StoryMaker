@@ -45,6 +45,14 @@ const $firstScene = $('#first-scene')
 const $preview = $('#preview')
 const $createScene = $('#create-scene')
 
+const $viewStory = $('#view-story')
+const $sceneImg = $('#scene-img')
+const $topBox = $('#top-box')
+const $bottomBox = $('#bottom-box')
+const $rightBox = $('#right-box')
+const $leftBox = $('#left-box')
+const $centerBox = $('#center-box')
+
 var imageChoose = ''
 var imagePath = ''
 var choiceCount = 0
@@ -652,6 +660,36 @@ $addChoice.addEventListener('click', () => {
     $('#choice-delete-' + choiceCount).addEventListener('click', (e) => {
         $('#choose-inf-' + e.target.choiceId).remove()
     })
+
+    $topBox.hidden = true
+    $bottomBox.hidden = true
+    $leftBox.hidden = true
+    $rightBox.hidden = true
+    $centerBox.hidden = true
+    $topBox.innerHTML = ''
+    $bottomBox.innerHTML = ''
+    $leftBox.innerHTML = ''
+    $rightBox.innerHTML = ''
+    $centerBox.innerHTML = ''
+    let textStyle = $textStyle.options[$textStyle.selectedIndex].value
+    let sceneText = $sceneText.value
+    switch (textStyle) {
+        case 'Top':
+            sceneTextView($topBox, document.querySelectorAll('[id^="choose-inf-"]'), sceneText, 'top-text')
+            break
+        case 'Bottom':
+            sceneTextView($bottomBox, document.querySelectorAll('[id^="choose-inf-"]'), sceneText, 'bottom-text')
+            break
+        case 'Left':
+            sceneTextView($leftBox, document.querySelectorAll('[id^="choose-inf-"]'), sceneText, 'left-text')
+            break
+        case 'Right':
+            sceneTextView($rightBox, document.querySelectorAll('[id^="choose-inf-"]'), sceneText, 'right-text')
+            break
+        case 'Center':
+            sceneTextView($centerBox, document.querySelectorAll('[id^="choose-inf-"]'), sceneText, 'center-text')
+            break
+    }
 })
 
 $chooseStoryForScene.addEventListener('change', () => {
@@ -671,6 +709,12 @@ $chooseStoryForScene.addEventListener('change', () => {
 $('input[type="file"]').addEventListener('change', (e) => {
     imageChoose = e.target.files[0].name
     imagePath = e.target.files[0].path
+    fs.copyFile(imagePath, path.resolve(dir + imageChoose), (err) => {
+        if (err) throw err
+        console.log(imageChoose + ' was copied.')
+    })
+    $sceneImg.style.backgroundImage = 'url(' + dir + imageChoose + ')'
+    $sceneImg.style.backgroundPosition = '0px 0px'
 })
 
 //Create Scene event
@@ -770,4 +814,136 @@ $createScene.addEventListener('click', () => {
 function getDirectories(srcpath) {
     return fs.readdirSync(srcpath)
             .filter(file => fs.statSync(path.join(srcpath, file)).isDirectory())
+}
+
+$sceneText.addEventListener('change', () => {
+    $topBox.hidden = true
+    $bottomBox.hidden = true
+    $leftBox.hidden = true
+    $rightBox.hidden = true
+    $centerBox.hidden = true
+    $topBox.innerHTML = ''
+    $bottomBox.innerHTML = ''
+    $leftBox.innerHTML = ''
+    $rightBox.innerHTML = ''
+    $centerBox.innerHTML = ''
+    let textStyle = $textStyle.options[$textStyle.selectedIndex].value
+    let sceneText = $sceneText.value
+    switch (textStyle) {
+        case 'Top':
+            sceneTextView($topBox, document.querySelectorAll('[id^="choose-inf-"]'), sceneText, 'top-text')
+            break
+        case 'Bottom':
+            sceneTextView($bottomBox, document.querySelectorAll('[id^="choose-inf-"]'), sceneText, 'bottom-text')
+            break
+        case 'Left':
+            sceneTextView($leftBox, document.querySelectorAll('[id^="choose-inf-"]'), sceneText, 'left-text')
+            break
+        case 'Right':
+            sceneTextView($rightBox, document.querySelectorAll('[id^="choose-inf-"]'), sceneText, 'right-text')
+            break
+        case 'Center':
+            sceneTextView($centerBox, document.querySelectorAll('[id^="choose-inf-"]'), sceneText, 'center-text')
+            break
+    }
+})
+
+$textStyle.addEventListener('change', () => {
+    $topBox.hidden = true
+    $bottomBox.hidden = true
+    $leftBox.hidden = true
+    $rightBox.hidden = true
+    $centerBox.hidden = true
+    $topBox.innerHTML = ''
+    $bottomBox.innerHTML = ''
+    $leftBox.innerHTML = ''
+    $rightBox.innerHTML = ''
+    $centerBox.innerHTML = ''
+    let textStyle = $textStyle.options[$textStyle.selectedIndex].value
+    let sceneText = $sceneText.value
+    switch (textStyle) {
+        case 'Top':
+            sceneTextView($topBox, document.querySelectorAll('[id^="choose-inf-"]'), sceneText, 'top-text')
+            break
+        case 'Bottom':
+            sceneTextView($bottomBox, document.querySelectorAll('[id^="choose-inf-"]'), sceneText, 'bottom-text')
+            break
+        case 'Left':
+            sceneTextView($leftBox, document.querySelectorAll('[id^="choose-inf-"]'), sceneText, 'left-text')
+            break
+        case 'Right':
+            sceneTextView($rightBox, document.querySelectorAll('[id^="choose-inf-"]'), sceneText, 'right-text')
+            break
+        case 'Center':
+            sceneTextView($centerBox, document.querySelectorAll('[id^="choose-inf-"]'), sceneText, 'center-text')
+            break
+    }
+})
+
+$imageAnimation.addEventListener('change', () => {
+    imgMovement($imageAnimation.options[$imageAnimation.selectedIndex].value)
+})
+
+function sceneTextView($box, choices, text, elId) {
+    let $topText = document.createElement('div')
+    $topText.id = elId
+    $topText.innerText = text
+    $box.append($topText)
+    let choiceNum = 0
+    if(choices.length > 0) {
+        for (let choice of choices) {
+            let choiceText = $('#choice-text-' + choice.choiceId).value
+            let div = document.createElement('div')
+            div.innerText = (choiceNum + 1) + ')' + choiceText
+            $box.append(div)
+            choiceNum++
+        }
+    }
+    $box.hidden = false
+}
+
+function imgMovement(side) {
+    let elem = $('#scene-img')
+    let pos = -50
+    let timer
+    switch (side) {
+        case 'Move to the bottom':
+            elem.style.backgroundSize = '500px 700px'
+            elem.style.backgroundPosition = '0px ' + pos + 'px'
+            timer = setInterval(function() {
+                pos++;
+                elem.style.backgroundPosition = '0px ' + pos + 'px'
+                if( pos == 0) clearInterval(timer)
+            }, 25)
+            break
+        case 'Move to the top':
+            pos = 0
+            elem.style.backgroundSize = '500px 700px'
+            elem.style.backgroundPosition = '0px ' + pos + 'px'
+            timer = setInterval(function() {
+                pos--;
+                elem.style.backgroundPosition = '0px ' + pos + 'px'
+                if( pos == -50) clearInterval(timer)
+            }, 25)
+            break
+        case 'Move to the right':
+            elem.style.backgroundSize = '550px 600px'
+            elem.style.backgroundPosition = pos + 'px 0px'
+            timer = setInterval(function() {
+                pos++;
+                elem.style.backgroundPosition =  pos + 'px 0px'
+                if( pos == 0) clearInterval(timer)
+            }, 25)
+            break
+        case 'Move to the left':
+            pos = 0
+            elem.style.backgroundSize = '550px 600px'
+            elem.style.backgroundPosition = pos + 'px 0px'
+            timer = setInterval(function() {
+                pos--;
+                elem.style.backgroundPosition =  pos + 'px 0px'
+                if( pos == -50) clearInterval(timer)
+            }, 25)
+            break
+    }
 }

@@ -23,8 +23,8 @@
         <div class="form-group">
             <div class="form-check">
                 <input id="story-name" type="text" class="form-con00trol" placeholder="Story name">
+                <button id="create-story" class="btn btn-dark" type="button">Create</button>
             </div>
-            <button id="create-story" class="btn btn-dark" type="button">Create</button>
         </div>
     </div>
 
@@ -89,7 +89,7 @@
                     <option>Left</option>
                     <option>Right</option>
                     <option>Bottom</option>
-                    <option>Middle</option>
+                    <option>Center</option>
                 </select>
             </div>
 
@@ -122,8 +122,28 @@
             </div>
         </div>
         <div class="col">
-            <div id="preview">Preview</div>
-            <button id="create-scene" class="btn btn-dark" type="button">Create</button>
+            <div class="row">
+                <div id="preview">Preview</div>
+            </div>
+            <div class="row">
+                <div class="container" id="view-story" story="" episodeId="" sceneId="" nextScene="">
+                    <img id="scene-img"
+                         style="width:500px; height: 600px; position:absolute; z-index: -10; background-repeat: no-repeat; margin-left: 0px;">
+                    <div id="top-box" class="top-text" hidden="true">
+                    </div>
+                    <div id="bottom-box" class="bottom-text" hidden="true">
+                    </div>
+                    <div id="right-box" class="right-text" hidden="true">
+                    </div>
+                    <div id="left-box" class="left-text" hidden="true">
+                    </div>
+                    <div id="center-box" class="center-text" hidden="true">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <button id="create-scene" class="btn btn-dark" type="button">Create</button>
+            </div>
         </div>
     </div>
 </form>

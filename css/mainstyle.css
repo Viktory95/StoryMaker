@@ -1,0 +1,70 @@
+body {
+    padding: 2% 2% 2% 2%;
+}
+
+.container {
+    width: 200px;
+    height: 400px;
+    color: #000;
+    margin-left: 0px;
+}
+
+.bottom-text {
+    position: absolute;
+    left: 27%;
+    bottom: 45%;
+    border: 6px groove #05828e;
+    border-radius: 10px 10px 10px 10px;
+    min-width: 100px;
+    min-height: 100px;
+    margin-left: 0px;
+}
+
+.top-text {
+    position: absolute;
+    left: 25%;
+    top: 10%;
+    border: 6px groove #05828e;
+    border-radius: 10px 10px 10px 10px;
+    min-width: 100px;
+    min-height: 100px;
+    margin-left: 0px;
+}
+
+.right-text {
+    position: absolute;
+    top: 30%;
+    left: 40%;
+    border: 6px groove #05828e;
+    border-radius: 10px 10px 10px 10px;
+    min-width: 100px;
+    min-height: 100px;
+    margin-left: 0px;
+}
+
+.left-text {
+    position: absolute;
+    top: 30%;
+    left: 20%;
+    border: 6px groove #05828e;
+    border-radius: 10px 10px 10px 10px;
+    min-width: 100px;
+    min-height: 100px;
+    margin-left: 0px;
+}
+
+.center-text {
+    position: absolute;
+    top: 35%;
+    left: 35%;
+    transform: translate(-50%, -50%);
+    border: 6px groove #05828e;
+    border-radius: 10px 10px 10px 10px;
+    min-width: 100px;
+    min-height: 100px;
+    margin-left: 0px;
+}
+
+#create-scene {
+    margin-top: 50%;
+}
